@@ -22,13 +22,13 @@ interface ConverterInterface {
 	/**
 	 * @param string $alias
 	 * @param TypeConverterInterface $typeConverter
-	 * @return void
+	 * @return static
 	 */
 	public static function register($alias, TypeConverterInterface $typeConverter);
 
 	/**
 	 * @param string $alias
-	 * @return void
+	 * @return static
 	 */
 	public static function unregister($alias);
 
@@ -39,7 +39,7 @@ interface ConverterInterface {
 	public static function get($alias);
 
 	/**
-	 * @return void
+	 * @return static
 	 */
 	public static function prune();
 }
