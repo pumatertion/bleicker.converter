@@ -14,15 +14,13 @@ use Closure;
  */
 class Converter implements ConverterInterface {
 
-	public static $typeConverters = [];
-
 	/**
 	 * @param string $alias
 	 * @param TypeConverterInterface $typeConverter
 	 * @return static
 	 */
 	public static function register($alias, TypeConverterInterface $typeConverter) {
-		static::$typeConverters[$alias] = $typeConverter;
+		Container::add($alias, $typeConverter);
 		return new static;
 	}
 
@@ -31,9 +29,7 @@ class Converter implements ConverterInterface {
 	 * @return static
 	 */
 	public static function unregister($alias) {
-		if (array_key_exists($alias, static::$typeConverters)) {
-			unset(static::$typeConverters[$alias]);
-		}
+		Container::remove($alias);
 		return new static;
 	}
 
@@ -42,10 +38,7 @@ class Converter implements ConverterInterface {
 	 * @return TypeConverterInterface|NULL
 	 */
 	public static function get($alias) {
-		if (array_key_exists($alias, static::$typeConverters)) {
-			return static::$typeConverters[$alias];
-		}
-		return NULL;
+		return Container::get($alias);
 	}
 
 	/**
@@ -74,7 +67,7 @@ class Converter implements ConverterInterface {
 	 * @return array
 	 */
 	protected static function resolveMatchingTypeConverter($source = NULL, $targetType) {
-		return array_filter(static::$typeConverters, static::getTypeConverterMatchingClosure($source, $targetType));
+		return array_filter(Container::storage(), static::getTypeConverterMatchingClosure($source, $targetType));
 	}
 
 	/**
@@ -92,7 +85,7 @@ class Converter implements ConverterInterface {
 	 * @return static
 	 */
 	public static function prune() {
-		static::$typeConverters = [];
+		Container::prune();
 		return new static;
 	}
 }
