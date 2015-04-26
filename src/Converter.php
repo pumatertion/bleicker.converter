@@ -19,20 +19,22 @@ class Converter implements ConverterInterface {
 	/**
 	 * @param string $alias
 	 * @param TypeConverterInterface $typeConverter
-	 * @return void
+	 * @return static
 	 */
 	public static function register($alias, TypeConverterInterface $typeConverter) {
 		static::$typeConverters[$alias] = $typeConverter;
+		return new static;
 	}
 
 	/**
 	 * @param string $alias
-	 * @return void
+	 * @return static
 	 */
 	public static function unregister($alias) {
 		if (array_key_exists($alias, static::$typeConverters)) {
 			unset(static::$typeConverters[$alias]);
 		}
+		return new static;
 	}
 
 	/**
@@ -87,9 +89,10 @@ class Converter implements ConverterInterface {
 	}
 
 	/**
-	 * @return void
+	 * @return static
 	 */
 	public static function prune() {
 		static::$typeConverters = [];
+		return new static;
 	}
 }
