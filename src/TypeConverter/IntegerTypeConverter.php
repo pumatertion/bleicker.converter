@@ -2,14 +2,14 @@
 
 namespace Bleicker\Converter\TypeConverter;
 
-use Bleicker\Converter\ConverterInterface;
+use Bleicker\Converter\AbstractTypeConverter;
 
 /**
  * Class IntegerTypeConverter
  *
  * @package Bleicker\Converter\TypeConverter
  */
-class IntegerTypeConverter implements TypeConverterInterface {
+class IntegerTypeConverter extends AbstractTypeConverter {
 
 	/**
 	 * @param mixed $source
@@ -17,7 +17,7 @@ class IntegerTypeConverter implements TypeConverterInterface {
 	 * @return boolean
 	 */
 	public static function canConvert($source = NULL, $targetType) {
-		if ($source !== NULL && in_array($targetType, [ConverterInterface::INT, ConverterInterface::INTEGER]) && (integer)$source) {
+		if ($source !== NULL && in_array($targetType, ['int', 'integer']) && (integer)$source) {
 			return TRUE;
 		}
 		return FALSE;

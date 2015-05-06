@@ -2,9 +2,9 @@
 
 namespace Bleicker\Converter;
 
+use Bleicker\Container\AbstractContainer;
 use Bleicker\Converter\Exception\MultipleTypeConvertersFoundException;
 use Bleicker\Converter\Exception\NoTypeConverterFoundException;
-use Bleicker\Converter\TypeConverter\TypeConverterInterface;
 use Closure;
 
 /**
@@ -12,41 +12,36 @@ use Closure;
  *
  * @package Bleicker\Converter
  */
-class Converter implements ConverterInterface {
+class Converter extends AbstractContainer implements ConverterInterface {
 
 	/**
-	 * @param string $alias
-	 * @param TypeConverterInterface $typeConverter
-	 * @return static
+	 * @var array
 	 */
-	public static function register($alias, TypeConverterInterface $typeConverter) {
-		Container::add($alias, $typeConverter);
-		return new static;
-	}
+	public static $storage = [];
 
 	/**
 	 * @param string $alias
-	 * @return static
-	 */
-	public static function unregister($alias) {
-		Container::remove($alias);
-		return new static;
-	}
-
-	/**
-	 * @param string $alias
-	 * @return TypeConverterInterface|NULL
+	 * @return TypeConverterInterface
 	 */
 	public static function get($alias) {
-		return Container::get($alias);
+		return parent::get($alias);
+	}
+
+	/**
+	 * @param string $alias
+	 * @param TypeConverterInterface $data
+	 * @return static
+	 */
+	public static function add($alias, $data) {
+		return parent::add($alias, $data);
 	}
 
 	/**
 	 * @param mixed $source
 	 * @param string $targetType
 	 * @return mixed
-	 * @throws Exception\MultipleTypeConvertersFoundException
-	 * @throws Exception\NoTypeConverterFoundException
+	 * @throws MultipleTypeConvertersFoundException
+	 * @throws NoTypeConverterFoundException
 	 */
 	public static function convert($source = NULL, $targetType) {
 		$possibleTypeConverters = static::resolveMatchingTypeConverter($source, $targetType);
@@ -67,7 +62,7 @@ class Converter implements ConverterInterface {
 	 * @return array
 	 */
 	protected static function resolveMatchingTypeConverter($source = NULL, $targetType) {
-		return array_filter(Container::storage(), static::getTypeConverterMatchingClosure($source, $targetType));
+		return array_filter(self::$storage, static::getTypeConverterMatchingClosure($source, $targetType));
 	}
 
 	/**
@@ -79,13 +74,5 @@ class Converter implements ConverterInterface {
 		return function (TypeConverterInterface $typeConverter) use ($source, $targetType) {
 			return $typeConverter::canConvert($source, $targetType);
 		};
-	}
-
-	/**
-	 * @return static
-	 */
-	public static function prune() {
-		Container::prune();
-		return new static;
 	}
 }

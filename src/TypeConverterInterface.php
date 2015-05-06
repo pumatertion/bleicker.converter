@@ -1,11 +1,11 @@
 <?php
 
-namespace Bleicker\Converter\TypeConverter;
+namespace Bleicker\Converter;
 
 /**
  * Interface TypeConverterInterface
  *
- * @package Bleicker\Converter\TypeConverter
+ * @package Bleicker\Converter
  */
 interface TypeConverterInterface {
 
@@ -21,4 +21,10 @@ interface TypeConverterInterface {
 	 * @return mixed
 	 */
 	public function convert($source);
+
+	/**
+	 * @param string $alias
+	 * @return void
+	 */
+	public static function register($alias = NULL);
 }
