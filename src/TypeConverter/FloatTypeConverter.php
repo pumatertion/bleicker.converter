@@ -2,14 +2,14 @@
 
 namespace Bleicker\Converter\TypeConverter;
 
-use Bleicker\Converter\ConverterInterface;
+use Bleicker\Converter\AbstractTypeConverter;
 
 /**
  * Class FloatTypeConverter
  *
  * @package Bleicker\Converter\TypeConverter
  */
-class FloatTypeConverter implements TypeConverterInterface {
+class FloatTypeConverter extends AbstractTypeConverter {
 
 	/**
 	 * @param mixed $source
@@ -17,7 +17,7 @@ class FloatTypeConverter implements TypeConverterInterface {
 	 * @return boolean
 	 */
 	public static function canConvert($source = NULL, $targetType) {
-		if ($source !== NULL && in_array($targetType, [ConverterInterface::FLOAT, ConverterInterface::DOUBLE]) && (float)$source) {
+		if ($source !== NULL && in_array($targetType, ['float', 'double']) && (float)$source) {
 			return TRUE;
 		}
 		return FALSE;

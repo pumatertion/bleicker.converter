@@ -2,14 +2,26 @@
 
 namespace Tests\Bleicker\Converter\Unit\Fixtures\TypeConverter;
 
-use Bleicker\Converter\TypeConverter\TypeConverterInterface;
+use Bleicker\Converter\AbstractTypeConverter;
 
 /**
  * Class TestTypeConverter
  *
  * @package Tests\Bleicker\Converter\Unit\Fixtures\TypeConverter
  */
-class TestTypeConverter implements TypeConverterInterface {
+class TestTypeConverter extends AbstractTypeConverter {
+
+	/**
+	 * @var string
+	 */
+	public $foo;
+
+	/**
+	 * @param string $foo
+	 */
+	public function __construct($foo = 'bar') {
+		$this->foo = $foo;
+	}
 
 	/**
 	 * @param mixed $source

@@ -2,14 +2,14 @@
 
 namespace Bleicker\Converter\TypeConverter;
 
-use Bleicker\Converter\ConverterInterface;
+use Bleicker\Converter\AbstractTypeConverter;
 
 /**
  * Class StringTypeConverter
  *
  * @package Bleicker\Converter\TypeConverter
  */
-class StringTypeConverter implements TypeConverterInterface {
+class StringTypeConverter extends AbstractTypeConverter {
 
 	/**
 	 * @param mixed $source
@@ -17,7 +17,7 @@ class StringTypeConverter implements TypeConverterInterface {
 	 * @return boolean
 	 */
 	public static function canConvert($source = NULL, $targetType) {
-		if ($source !== NULL && $targetType === ConverterInterface::STRING && (string)$source) {
+		if ($source !== NULL && $targetType === 'string' && (string)$source) {
 			return TRUE;
 		}
 		return FALSE;

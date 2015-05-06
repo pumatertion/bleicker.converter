@@ -1,8 +1,6 @@
 <?php
 namespace Bleicker\Converter;
 
-use Bleicker\Converter\TypeConverter\TypeConverterInterface;
-
 /**
  * Class Converter
  *
@@ -10,36 +8,33 @@ use Bleicker\Converter\TypeConverter\TypeConverterInterface;
  */
 interface ConverterInterface {
 
-	const STRING = 'string', INTEGER = 'integer', INT = 'int', FLOAT = 'float', DOUBLE = 'double', BOOLEAN = 'boolean', BOOL = 'boolean';
-
 	/**
-	 * @param mixed $source
-	 * @param string $targetType
-	 * @return mixed
+	 * @param string $alias
+	 * @return boolean
 	 */
-	public static function convert($source = NULL, $targetType);
+	public static function has($alias);
 
 	/**
 	 * @param string $alias
-	 * @param TypeConverterInterface $typeConverter
+	 * @param TypeConverterInterface $data
 	 * @return static
 	 */
-	public static function register($alias, TypeConverterInterface $typeConverter);
-
-	/**
-	 * @param string $alias
-	 * @return static
-	 */
-	public static function unregister($alias);
-
-	/**
-	 * @param string $alias
-	 * @return TypeConverterInterface|NULL
-	 */
-	public static function get($alias);
+	public static function add($alias, $data);
 
 	/**
 	 * @return static
 	 */
 	public static function prune();
+
+	/**
+	 * @param string $alias
+	 * @return TypeConverterInterface
+	 */
+	public static function get($alias);
+
+	/**
+	 * @param string $alias
+	 * @return static
+	 */
+	public static function remove($alias);
 }

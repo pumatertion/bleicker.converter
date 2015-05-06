@@ -14,23 +14,63 @@ use Tests\Bleicker\Converter\UnitTestCase;
  */
 class ConverterTest extends UnitTestCase {
 
-	/**
-	 * @test
-	 */
-	public function registerUnregisterTypeConverterTest() {
-		$alias = TestTypeConverter::class;
-		Converter::register($alias, new TestTypeConverter());
-		$this->assertInstanceOf(TypeConverterInterface::class, Converter::get($alias), 'TypeConverter is registered');
-		Converter::unregister($alias);
-		$this->assertNull(Converter::get($alias), 'TypeConverter is not registered');
+	protected function setUp() {
+		parent::setUp();
+		Converter::prune();
+	}
+
+	protected function tearDown() {
+		parent::tearDown();
+		Converter::prune();
 	}
 
 	/**
 	 * @test
 	 */
-	public function convertWithTestTypeConverter() {
-		$alias = TestTypeConverter::class;
-		Converter::register($alias, new TestTypeConverter());
+	public function registerUnregisterTypeConverterTest() {
+		TestTypeConverter::register('foo');
+		$this->assertInstanceOf(TestTypeConverter::class, Converter::get('foo'), 'TypeConverter is registered');
+
+		Converter::remove('foo');
+		$this->assertFalse(Converter::has('foo'));
+		$this->assertNull(Converter::get('foo'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function convertWithTestTypeConverterTest() {
+		TestTypeConverter::register('foo');
 		$this->assertEquals('converted', Converter::convert('foo', 'bar'), 'Is converted to expected result');
 	}
+
+	/**
+	 * @test
+	 */
+	public function constructorTestTest() {
+		TestTypeConverter::register('foo', 'hello world');
+		/** @var TestTypeConverter $typeConverter */
+		$typeConverter = Converter::get('foo');
+		$this->assertEquals('hello world', $typeConverter->foo);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \Bleicker\Converter\Exception\MultipleTypeConvertersFoundException
+	 */
+	public function multiMatchingConverterTest() {
+		TestTypeConverter::register('foo');
+		TestTypeConverter::register('bar');
+		Converter::convert('foo', 'bar');
+	}
+
+	/**
+	 * @test
+	 * @expectedException \Bleicker\Converter\Exception\NoTypeConverterFoundException
+	 */
+	public function noConverterFoundTest() {
+		Converter::convert('foo', 'bar');
+	}
+
+
 }
