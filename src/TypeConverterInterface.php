@@ -24,7 +24,7 @@ interface TypeConverterInterface {
 
 	/**
 	 * @param string $alias
-	 * @return void
+	 * @return TypeConverterInterface
 	 */
 	public static function register($alias = NULL);
 }
