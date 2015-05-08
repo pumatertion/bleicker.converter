@@ -3,6 +3,8 @@
 namespace Bleicker\Converter;
 
 use Bleicker\ObjectManager\ObjectManager;
+use Bleicker\Translation\Locales;
+use Bleicker\Translation\LocalesInterface;
 use ReflectionClass;
 
 /**
@@ -11,6 +13,15 @@ use ReflectionClass;
  * @package Bleicker\Converter
  */
 abstract class AbstractTypeConverter implements TypeConverterInterface {
+
+	/**
+	 * @var LocalesInterface
+	 */
+	protected $locales;
+
+	public function __construct() {
+		$this->locales = ObjectManager::isRegistered(LocalesInterface::class) ? ObjectManager::get(LocalesInterface::class) : ObjectManager::get(Locales::class);
+	}
 
 	/**
 	 * @param string $alias
@@ -27,5 +38,14 @@ abstract class AbstractTypeConverter implements TypeConverterInterface {
 		$converter = ObjectManager::isRegistered(ConverterInterface::class) ? ObjectManager::get(ConverterInterface::class) : ObjectManager::get(Converter::class);
 		$converter->add($alias, $instance);
 		return $instance;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isLocalizationMode() {
+		$systemLocale = $this->locales->getSystemLocale();
+		$defaultLocale = $this->locales->getDefault();
+		return (string)$defaultLocale !== (string)$systemLocale;
 	}
 }
