@@ -19,7 +19,13 @@ abstract class AbstractTypeConverter implements TypeConverterInterface {
 	 */
 	protected $locales;
 
+	/**
+	 * @var ConverterInterface
+	 */
+	protected $converter;
+
 	public function __construct() {
+		$this->converter = ObjectManager::isRegistered(ConverterInterface::class) ? ObjectManager::get(ConverterInterface::class) : ObjectManager::get(Converter::class);
 		$this->locales = ObjectManager::isRegistered(LocalesInterface::class) ? ObjectManager::get(LocalesInterface::class) : ObjectManager::get(Locales::class);
 	}
 
@@ -47,5 +53,12 @@ abstract class AbstractTypeConverter implements TypeConverterInterface {
 		$systemLocale = $this->locales->getSystemLocale();
 		$defaultLocale = $this->locales->getDefault();
 		return (string)$defaultLocale !== (string)$systemLocale;
+	}
+
+	/**
+	 * @return ConverterInterface
+	 */
+	public function getConverter(){
+		return $this->converter;
 	}
 }
