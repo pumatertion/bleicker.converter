@@ -27,4 +27,9 @@ interface TypeConverterInterface {
 	 * @return TypeConverterInterface
 	 */
 	public static function register($alias = NULL);
+
+	/**
+	 * @return ConverterInterface
+	 */
+	public function getConverter();
 }
