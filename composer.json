@@ -4,6 +4,7 @@
 	"require": {
 		"bleicker/exception": "1.0.*",
 		"bleicker/container": "1.0.*",
+		"bleicker/translation": "0.2.*",
 		"bleicker/objectmanager": "1.0.*"
 	},
 	"require-dev": {
