@@ -37,4 +37,11 @@ interface ConverterInterface {
 	 * @return static
 	 */
 	public static function remove($alias);
+
+	/**
+	 * @param mixed $source
+	 * @param string $targetType
+	 * @return mixed
+	 */
+	public static function convert($source = NULL, $targetType);
 }
