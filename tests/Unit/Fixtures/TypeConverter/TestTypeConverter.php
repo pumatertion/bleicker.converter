@@ -17,9 +17,11 @@ class TestTypeConverter extends AbstractTypeConverter {
 	public $foo;
 
 	/**
+	 * @param integer $priority
 	 * @param string $foo
 	 */
-	public function __construct($foo = 'bar') {
+	public function __construct($priority, $foo = 'bar') {
+		parent::__construct($priority);
 		$this->foo = $foo;
 	}
 

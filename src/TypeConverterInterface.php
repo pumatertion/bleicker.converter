@@ -23,13 +23,18 @@ interface TypeConverterInterface {
 	public function convert($source);
 
 	/**
-	 * @param string $alias
+	 * @param integer $priority
 	 * @return TypeConverterInterface
 	 */
-	public static function register($alias = NULL);
+	public static function register($priority = NULL);
 
 	/**
 	 * @return ConverterInterface
 	 */
 	public function getConverter();
+
+	/**
+	 * @return integer
+	 */
+	public function getPriority();
 }

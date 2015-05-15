@@ -15,6 +15,11 @@ use ReflectionClass;
 abstract class AbstractTypeConverter implements TypeConverterInterface {
 
 	/**
+	 * @var integer
+	 */
+	protected $priority;
+
+	/**
 	 * @var LocalesInterface
 	 */
 	protected $locales;
@@ -24,22 +29,33 @@ abstract class AbstractTypeConverter implements TypeConverterInterface {
 	 */
 	protected $converter;
 
-	public function __construct() {
+	/**
+	 * @param integer $priority
+	 */
+	public function __construct($priority = NULL) {
+		$this->priority = $priority === NULL ? 0 : $priority;
 		$this->converter = ObjectManager::get(ConverterInterface::class, Converter::class);
 		$this->locales = ObjectManager::get(LocalesInterface::class, Locales::class);
 	}
 
 	/**
-	 * @param string $alias
+	 * @return integer
+	 */
+	public function getPriority() {
+		return $this->priority;
+	}
+
+	/**
+	 * @param integer $priority
 	 * @return TypeConverterInterface
 	 */
-	public static function register($alias = NULL) {
-		if ($alias === NULL) {
-			$alias = static::class;
-		}
+	public static function register($priority = NULL) {
+		$alias = static::class;
+		$arguments = ['priority' => (integer)$priority];
+		$arguments = array_merge($arguments, array_slice(func_get_args(), 1));
 		$reflection = new ReflectionClass(static::class);
 		/** @var TypeConverterInterface $instance */
-		$instance = $reflection->newInstanceArgs(array_slice(func_get_args(), 1));
+		$instance = $reflection->newInstanceArgs($arguments);
 		/** @var ConverterInterface $converter */
 		$converter = ObjectManager::get(ConverterInterface::class, Converter::class);
 		$converter->add($alias, $instance);
@@ -58,7 +74,7 @@ abstract class AbstractTypeConverter implements TypeConverterInterface {
 	/**
 	 * @return ConverterInterface
 	 */
-	public function getConverter(){
+	public function getConverter() {
 		return $this->converter;
 	}
 }
