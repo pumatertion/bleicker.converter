@@ -3,7 +3,6 @@
 namespace Bleicker\Converter;
 
 use Bleicker\Container\AbstractContainer;
-use Bleicker\Converter\Exception\MultipleTypeConvertersFoundException;
 use Bleicker\Converter\Exception\NoTypeConverterFoundException;
 use Closure;
 
@@ -40,20 +39,36 @@ class Converter extends AbstractContainer implements ConverterInterface {
 	 * @param mixed $source
 	 * @param string $targetType
 	 * @return mixed
-	 * @throws MultipleTypeConvertersFoundException
 	 * @throws NoTypeConverterFoundException
 	 */
 	public static function convert($source = NULL, $targetType) {
 		$possibleTypeConverters = static::resolveMatchingTypeConverter($source, $targetType);
-		if (count($possibleTypeConverters) === 0) {
+		$typeConverter = static::resolveConverterWithHighestPriority($possibleTypeConverters);
+		if ($typeConverter === NULL) {
 			throw new NoTypeConverterFoundException('Could not find any suitable TypeConverter to convert "' . gettype($source) . '" to "' . $targetType . '"', 1429829310);
 		}
-		if (count($possibleTypeConverters) > 1) {
-			throw new MultipleTypeConvertersFoundException('Multiple suitable TypeConverters found. Can\'t decide which one to use for converting  from "' . gettype($source) . '" to "' . $targetType . '"', 1429829311);
-		}
-		/** @var TypeConverterInterface $typeConverter */
-		$typeConverter = array_shift($possibleTypeConverters);
 		return $typeConverter->convert($source);
+	}
+
+	/**
+	 * @param array $typeConverters
+	 * @return TypeConverterInterface
+	 */
+	protected static function resolveConverterWithHighestPriority(array $typeConverters = array()) {
+		/** @var TypeConverterInterface $highestPriorityTypeConverter */
+		$highestPriorityTypeConverter = NULL;
+		/** @var TypeConverterInterface $typeConverter */
+		foreach ($typeConverters as $typeConverter) {
+			if($highestPriorityTypeConverter === NULL){
+				$highestPriorityTypeConverter = $typeConverter;
+				continue;
+			}
+			if ($typeConverter->getPriority() > $highestPriorityTypeConverter->getPriority()) {
+				$highestPriorityTypeConverter = $typeConverter;
+				continue;
+			}
+		}
+		return $highestPriorityTypeConverter;
 	}
 
 	/**
